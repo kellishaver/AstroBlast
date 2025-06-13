@@ -43,5 +43,10 @@ config.INVULNERABILITY_TIME = 2.0
 config.STAR_COUNT = 200
 config.STAR_SPEED_MIN = 50
 config.STAR_SPEED_MAX = 200
+config.SCROLL_SPEED = 220
+-- Boss battle settings
+config.BOSS_TRIGGER_DISTANCE = 1000
+config.BOSS_ENEMIES_TO_DEFEAT = 4
+config.BOSS_ENEMY_SPAWN_RATE = 1.0
 
 return config

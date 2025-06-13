@@ -133,4 +133,52 @@ function collision.getScoreThisFrame()
     return scoreThisFrame
 end
 
+
+function collision.checkBossBattle(player, enemies, powerups)
+    scoreThisFrame = 0
+    local playerData = player.getData()
+    local playerHit = nil
+    
+    if not player.isInvulnerable() then
+        -- Check player vs enemy bullets
+        playerHit = collision.checkPlayerEnemyBullets(playerData, enemies)
+        
+        -- Check player vs enemy ships
+        if not playerHit then
+            playerHit = collision.checkPlayerEnemies(playerData, enemies)
+        end
+    end
+    
+    -- Check player vs powerups (always allowed)
+    local powerupHit = collision.checkPlayerPowerups(playerData, powerups)
+    if powerupHit then
+        playerHit = powerupHit
+    end
+    
+    -- Check missiles vs enemies (no asteroids in boss battle)
+    collision.checkMissileEnemies(playerData, enemies)
+    
+    return playerHit
+end
+
+function collision.checkMissileEnemies(playerData, enemies)
+    for i = #playerData.missiles, 1, -1 do
+        local missile = playerData.missiles[i]
+        
+        -- Check missile vs enemies
+        for j, enemy in ipairs(enemies.getEnemies()) do
+            local dx = missile.x - enemy.x
+            local dy = missile.y - enemy.y
+            local distance = math.sqrt(dx * dx + dy * dy)
+            
+            if distance < enemy.size then
+                table.remove(playerData.missiles, i)
+                enemies.removeEnemy(j)
+                scoreThisFrame = scoreThisFrame + 50
+                break
+            end
+        end
+    end
+end
+
 return collision

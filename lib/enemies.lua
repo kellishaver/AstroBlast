@@ -188,4 +188,86 @@ function enemies.removeBullet(index)
     table.remove(enemyBullets, index)
 end
 
+function enemies.updateBossBattle(dt)
+    -- Different enemy spawning logic for boss battle
+    local baseSpawnRate = config.BOSS_ENEMY_SPAWN_RATE
+    
+    spawnTimer = spawnTimer + dt
+    if spawnTimer >= baseSpawnRate then
+        -- Only spawn if we haven't defeated enough enemies yet
+        local defeated, needed = require("lib/boss").getProgress()
+        if defeated < needed then
+            enemies.spawn()
+            spawnTimer = 0
+        end
+    end
+    
+    -- Update existing enemies (same as normal)
+    for i = #enemyList, 1, -1 do
+        local enemy = enemyList[i]
+        enemy.x = enemy.x - enemy.speed * dt
+        enemy.fireTimer = enemy.fireTimer - dt
+        
+        -- Handle rotation logic (same as normal)
+        if math.abs(enemy.rotation - enemy.targetRotation) > 0.1 then
+            local rotDiff = enemy.targetRotation - enemy.rotation
+            if rotDiff > math.pi then rotDiff = rotDiff - 2 * math.pi end
+            if rotDiff < -math.pi then rotDiff = rotDiff + 2 * math.pi end
+            
+            local rotStep = enemy.rotationSpeed * dt
+            if math.abs(rotDiff) < rotStep then
+                enemy.rotation = enemy.targetRotation
+            else
+                enemy.rotation = enemy.rotation + (rotDiff > 0 and rotStep or -rotStep)
+            end
+        end
+        
+        -- Fire at player
+        if enemy.fireTimer <= 0 and enemy.bulletCount < config.MAX_ENEMY_BULLETS_PER_SHIP then
+            local player = require("lib/player").getData()
+            local dx = player.x - enemy.x
+            local dy = player.y - enemy.y
+            enemy.targetRotation = math.atan2(dy, dx)
+            
+            enemies.fireAtPlayer(enemy, player, 0) -- No score-based difficulty in boss battle
+            enemy.returnTimer = 0.5
+        end
+        
+        -- Return to normal orientation
+        if enemy.returnTimer then
+            enemy.returnTimer = enemy.returnTimer - dt
+            if enemy.returnTimer <= 0 then
+                enemy.targetRotation = 0
+                enemy.returnTimer = nil
+            end
+        end
+        
+        if enemy.x < -enemy.size * 2 then
+            table.remove(enemyList, i)
+        end
+    end
+    
+    -- Update bullets (same as normal)
+    for i = #enemyBullets, 1, -1 do
+        local bullet = enemyBullets[i]
+        bullet.x = bullet.x + bullet.vx * dt
+        bullet.y = bullet.y + bullet.vy * dt
+        
+        if bullet.x < 0 or bullet.x > config.SCREEN_WIDTH or 
+           bullet.y < 0 or bullet.y > config.SCREEN_HEIGHT then
+            if bullet.owner then
+                bullet.owner.bulletCount = bullet.owner.bulletCount - 1
+            end
+            table.remove(enemyBullets, i)
+        end
+    end
+end
+
+-- Override the removeEnemy function to notify boss of defeat
+local originalRemoveEnemy = enemies.removeEnemy
+function enemies.removeEnemy(index)
+    originalRemoveEnemy(index)
+    -- Notify boss system of enemy defeat
+    require("lib/boss").enemyDefeated()
+end
 return enemies

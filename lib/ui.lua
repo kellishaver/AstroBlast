@@ -21,7 +21,7 @@ end
 
 function ui.drawLifeIcons(lives)
     love.graphics.setColor(0.8, 0.9, 1, 0.6)
-    local iconSize = 1
+    local iconSize = 8
     local spacing = 25
     local startX = config.SCREEN_WIDTH - 30
     local y = 15
@@ -52,6 +52,44 @@ function ui.drawGameOver(score, highScore, font)
     
     love.graphics.printf(gameOverText, 
                        0, config.SCREEN_HEIGHT/2 - 40, config.SCREEN_WIDTH, "center")
+end
+
+function ui.drawBossHUD(score, lives, defeated, needed)
+    -- Draw normal HUD
+    local font = love.graphics.newFont("assets/upheavtt.ttf", 30)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print(score, font, 10, 10)
+    
+    -- Draw life icons
+    ui.drawLifeIcons(lives)
+    
+    -- Draw boss progress
+    love.graphics.setColor(1, 1, 0.2)
+    love.graphics.print("Hostiles Remaining: " .. (needed - defeated), 10, config.SCREEN_HEIGHT - 40)
+    
+    if defeated >= needed then
+        love.graphics.setColor(0.2, 1, 0.3)
+        love.graphics.print("DOCKING SEQUENCE INITIATED!", config.SCREEN_WIDTH/2 - 120, config.SCREEN_HEIGHT - 60)
+    end
+end
+
+function ui.drawVictory(score, highScore)
+    local font = love.graphics.newFont("assets/upheavtt.ttf", 30)
+    love.graphics.setColor(0.2, 1, 0.3)
+    if font then love.graphics.setFont(font) end
+    
+    local victoryText = "MISSION COMPLETE!\nStation Secured!\nFinal Score: " .. score
+    
+    if score > highScore then
+        victoryText = victoryText .. "\n\nNEW HIGH SCORE!"
+    elseif highScore > 0 then
+        victoryText = victoryText .. "\nHigh Score: " .. highScore
+    end
+    
+    victoryText = victoryText .. "\n\nPress R to play again"
+    
+    love.graphics.printf(victoryText, 
+                       0, config.SCREEN_HEIGHT/2 - 80, config.SCREEN_WIDTH, "center")
 end
 
 return ui
