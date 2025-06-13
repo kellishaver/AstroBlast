@@ -9,7 +9,7 @@ local spaceStation = {}
 local enemiesDefeated = 0
 local totalEnemiesNeeded = 0
 local isActive = false
-local stationState = "approaching" -- approaching, arrived, docking_ready
+local stationState = "approaching" -- approaching, arrived, docking_ready, docking
 
 function boss.load()
     boss.reset()
@@ -65,10 +65,35 @@ function boss.update(dt)
     if stationState == "arrived" and enemiesDefeated >= totalEnemiesNeeded then
         spaceStation.dockingBayLit = true
         stationState = "docking_ready"
-        return "auto_dock" -- Auto-dock when enemies are cleared
+        return "docking_ready" -- Signal that docking is ready
+    end
+    
+    -- Handle docking state
+    if stationState == "docking" then
+        return "docking" -- Continue docking animation
     end
     
     return nil
+end
+
+function boss.startDocking()
+    if stationState == "docking_ready" then
+        stationState = "docking"
+        return true
+    end
+    return false
+end
+
+function boss.isDocking()
+    return stationState == "docking"
+end
+
+function boss.getDockingTarget()
+    -- Return the position of the middle docking bay for the player to move to
+    return {
+        x = spaceStation.x - 10,
+        y = spaceStation.y
+    }
 end
 
 function boss.enemyDefeated()

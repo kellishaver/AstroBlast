@@ -14,10 +14,15 @@ local config = require("lib/config")
 local gameState = "start"
 local score = 0
 local highScore = 0
-local lives = 3
+local lives = config.PLAYER_LIVES
 local nextPowerupScore = 300
 local powerupIncrement = 300
 local distanceTraveled = 0
+
+-- Docking animation variables
+local dockingTimer = 0
+local dockingSpeed = 150
+local dockingStarted = false
 
 function love.load()
     love.window.setTitle("Space Shooter")
@@ -56,10 +61,9 @@ function love.update(dt)
             -- Keep normal music playing during approach
         end
         
-        -- Check powerup spawn
+        -- Check powerup spawn based on score
         if score >= nextPowerupScore then
             powerups.spawn()
-            sound.play("playerLife")
             powerupIncrement = powerupIncrement + 100
             nextPowerupScore = nextPowerupScore + powerupIncrement
         end
@@ -100,9 +104,12 @@ function love.update(dt)
         -- Handle collisions normally during approach
         local playerHit = collision.checkAll(player, enemies, asteroids, powerups)
         if playerHit then
-            lives = lives - playerHit.damage
             if playerHit.type == "powerup" then
                 lives = lives + 1
+                sound.play("playerLife")
+            else
+                lives = lives - playerHit.damage
+                player.takeDamage()
             end
             
             if lives <= 0 then
@@ -117,21 +124,36 @@ function love.update(dt)
         
         score = score + collision.getScoreThisFrame()
         
+        -- Check powerup spawn based on score (after score is updated)
+        if score >= nextPowerupScore then
+            powerups.spawn()
+            powerupIncrement = powerupIncrement + 100
+            nextPowerupScore = nextPowerupScore + powerupIncrement
+        end
     elseif gameState == "boss_battle" then
         player.update(dt)
         enemies.updateBossBattle(dt)
         
         local bossResult = boss.update(dt)
-        if bossResult == "auto_dock" then
-            -- Auto-dock when all enemies are defeated
-            gameState = "victory"
-            sound.play("playerLife") -- Or add a victory sound
+        if bossResult == "docking_ready" and not dockingStarted then
+            -- Start the docking sequence
+            gameState = "auto_docking"
+            dockingStarted = true
+            dockingTimer = 0
+            boss.startDocking()
         end
         
         -- Handle collisions (no asteroids in boss battle)
         local playerHit = collision.checkBossBattle(player, enemies, powerups)
         if playerHit then
-            lives = lives - playerHit.damage
+            if playerHit.type == "powerup" then
+                lives = lives + 1
+                sound.play("playerLife")
+            else
+                lives = lives - playerHit.damage
+                player.takeDamage()
+            end
+            
             if lives <= 0 then
                 gameState = "gameover"
                 if score > highScore then
@@ -142,12 +164,43 @@ function love.update(dt)
         end
         
         score = score + collision.getScoreThisFrame()
+        
+    elseif gameState == "auto_docking" then
+        -- Handle the automatic docking animation
+        dockingTimer = dockingTimer + dt
+        
+        local playerData = player.getData()
+        local dockTarget = boss.getDockingTarget()
+        
+        -- Move player towards docking bay
+        local dx = dockTarget.x - playerData.x
+        local dy = dockTarget.y - playerData.y
+        local distance = math.sqrt(dx * dx + dy * dy)
+        
+        if distance > 5 then
+            -- Move player towards dock
+            local moveX = (dx / distance) * dockingSpeed * dt
+            local moveY = (dy / distance) * dockingSpeed * dt
+            
+            playerData.x = playerData.x + moveX
+            playerData.y = playerData.y + moveY
+        else
+            -- Player has reached the docking bay - show victory
+            gameState = "victory"
+            if score > highScore then
+                highScore = score
+            end
+            sound.play("playerLife") -- Or add a victory sound
+        end
+        
+        -- Continue updating the boss and effects during docking
+        boss.update(dt)
     end
 end
 
 function love.draw()
     -- Only draw stars in normal play, not boss battle
-    if gameState ~= "boss_battle" then
+    if gameState ~= "boss_battle" and gameState ~= "auto_docking" then
         effects.drawStars()
     else
         -- Different background for boss battle - darker space
@@ -174,6 +227,16 @@ function love.draw()
         player.draw()
         ui.drawBossHUD(score, lives, boss.getProgress())
         
+    elseif gameState == "auto_docking" then
+        boss.draw()
+        player.draw()
+        ui.drawBossHUD(score, lives, boss.getProgress())
+        
+        -- Draw docking message
+        love.graphics.setColor(0.2, 1, 0.3)
+        love.graphics.printf("DOCKING IN PROGRESS...", 
+                           0, config.SCREEN_HEIGHT/2 + 100, config.SCREEN_WIDTH, "center")
+        
     elseif gameState == "victory" then
         boss.draw()
         player.draw()
@@ -199,6 +262,8 @@ function love.keypressed(key)
         distanceTraveled = 0  -- Reset distance
         nextPowerupScore = 300
         powerupIncrement = 300
+        dockingTimer = 0      -- Reset docking variables
+        dockingStarted = false
         player.reset()
         enemies.reset()
         asteroids.reset()

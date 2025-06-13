@@ -9,6 +9,7 @@ config.SCREEN_HEIGHT = 600
 -- Player settings
 config.PLAYER_SPEED = 300
 config.PLAYER_SIZE = 15
+config.PLAYER_LIVES = 4
 
 -- Missile settings
 config.MISSILE_SPEED = 500
@@ -45,8 +46,8 @@ config.STAR_SPEED_MIN = 50
 config.STAR_SPEED_MAX = 200
 config.SCROLL_SPEED = 220
 -- Boss battle settings
-config.BOSS_TRIGGER_DISTANCE = 1000
-config.BOSS_ENEMIES_TO_DEFEAT = 4
+config.BOSS_TRIGGER_DISTANCE = 10000
+config.BOSS_ENEMIES_TO_DEFEAT = 10
 config.BOSS_ENEMY_SPAWN_RATE = 1.0
 
 return config
