@@ -8,6 +8,7 @@ local sounds = {}
 function sound.load()
     sounds.menuLoop       = love.audio.newSource("assets/menu-loop.mp3", "stream")
     sounds.gameLoop       = love.audio.newSource("assets/game-loop.mp3", "stream")
+    sounds.bossLoop       = love.audio.newSource("assets/boss-loop.mp3", "stream")  -- ADD THIS
     sounds.playerMissile  = love.audio.newSource("assets/player-missile.mp3", "static")
     sounds.enemyMissile   = love.audio.newSource("assets/enemy-missile.mp3", "static")
     sounds.asteroidHit    = love.audio.newSource("assets/asteroid-hit.mp3", "static")
@@ -15,9 +16,11 @@ function sound.load()
     sounds.playerHit      = love.audio.newSource("assets/player-hit.mp3", "static")
     sounds.playerLife     = love.audio.newSource("assets/player-life.mp3", "static")
     sounds.gameOver       = love.audio.newSource("assets/game-over.mp3", "static")
+    sounds.victory        = love.audio.newSource("assets/victory.mp3", "static")    -- AND THIS
     
     sounds.menuLoop:setLooping(true)
     sounds.gameLoop:setLooping(true)
+    sounds.bossLoop:setLooping(true)  -- AND THIS
 end
 
 function sound.play(soundName)
@@ -34,12 +37,21 @@ function sound.playGameMusic()
     love.audio.play(sounds.gameLoop)
 end
 
+function sound.playBossMusic()
+    love.audio.play(sounds.bossLoop)
+end
+
 function sound.stopMenuMusic()
     love.audio.stop(sounds.menuLoop)
 end
 
 function sound.stopGameMusic()
     love.audio.stop(sounds.gameLoop)
+end
+
+function sound.stopBossMusic()
+    sound.stopGameMusic()
+    love.audio.stop(sounds.bossLoop)
 end
 
 return sound

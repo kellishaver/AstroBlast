@@ -13,6 +13,7 @@ local stationState = "approaching" -- approaching, arrived, docking_ready, docki
 
 function boss.load()
     boss.reset()
+    sound.playBossMusic()
 end
 
 function boss.reset()
