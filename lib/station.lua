@@ -41,8 +41,7 @@ function station.activate()
     spaceStation.x = config.SCREEN_WIDTH + 300
 end
 
-function station.update(dt)
-    if not isActive then return nil end
+w    if not isActive then return nil end
     
     spaceStation.rotationOffset = spaceStation.rotationOffset + dt * 0.5
     
