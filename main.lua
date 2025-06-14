@@ -17,7 +17,7 @@ local gameState = {
     state = "start",
     score = 0,
     highScore = 0,
-    lives = 3,
+    lives = config.PLAYER_LIVES,
     nextPowerupScore = 300,
     powerupIncrement = 300,
     distanceTraveled = 0,
@@ -102,14 +102,17 @@ function love.update(dt)
             playerData.x = playerData.x + moveX
             playerData.y = playerData.y + moveY
         else
-            gameState.state = "victory"
-            if gameState.score > gameState.highScore then
-                gameState.highScore = gameState.score
+            -- Player has reached docking position, check if actually docked
+            if station.checkPlayerDocking(playerData) then
+                gameState.state = "victory"
+                if gameState.score > gameState.highScore then
+                    gameState.highScore = gameState.score
+                end
+                sound.stopStationMusic()
+                sound.play("victory")
             end
-            sound.stopStationMusic()
-            sound.play("victory")
         end
-        
+
         station.update(dt)
     end
 end
@@ -139,7 +142,7 @@ function love.draw()
         asteroids.draw()
         enemies.draw()
         powerups.draw()
-        station.draw()  -- ADD THIS LINE!
+        station.draw()
         player.draw()
         ui.drawHUD(gameState.score, gameState.lives)
         

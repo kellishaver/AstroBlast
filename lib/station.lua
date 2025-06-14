@@ -47,9 +47,6 @@ function station.update(dt)
     spaceStation.rotationOffset = spaceStation.rotationOffset + dt * 0.5
     
     if stationState == "approaching" then
-        print("Station pos:", spaceStation.x, "Target:", spaceStation.targetX, "State:", stationState)
-        
-        -- Use original scroll speed for now to test
         spaceStation.x = spaceStation.x - config.SCROLL_SPEED * dt
         
         if spaceStation.x <= spaceStation.targetX then
@@ -92,6 +89,29 @@ function station.getDockingTarget()
     }
 end
 
+function station.checkPlayerDocking(playerData)
+    if not isActive or (stationState ~= "docking_ready" and stationState ~= "docking") then
+        return false
+    end
+    
+    local dockBays = {
+        {x = spaceStation.x - 20, y = spaceStation.y - 25, w = 30, h = 18},
+        {x = spaceStation.x - 20, y = spaceStation.y - 5, w = 30, h = 18},
+        {x = spaceStation.x - 20, y = spaceStation.y + 15, w = 30, h = 18}
+    }
+    
+    for _, bay in ipairs(dockBays) do
+        if playerData.x + playerData.size > bay.x and 
+           playerData.x - playerData.size < bay.x + bay.w and
+           playerData.y + playerData.size > bay.y and 
+           playerData.y - playerData.size < bay.y + bay.h then
+            return true
+        end
+    end
+    
+    return false
+end
+
 function station.enemyDefeated()
     if isActive then
         enemiesDefeated = enemiesDefeated + 1
@@ -101,65 +121,6 @@ end
 function station.draw()
     if not isActive then return end
     renderer.renderStation(spaceStation, stationState)
-end
-
-function station.checkPlayerDocking(playerData)
-    if not isActive or stationState ~= "docking_ready" then
-        return false
-    end
-    
-    local dockBays = {
-        {x = spaceStation.x - 20, y = spaceStation.y - 25, w = 30, h = 18},
-        {x = spaceStation.x - 20, y = spaceStation.y - 5, w = 30, h = 18},
-        {x = spaceStation.x - 20, y = spaceStation.y + 15, w = 30, h = 18}
-    }
-    
-    for _, bay in ipairs(dockBays) do
-        if playerData.x + playerData.size > bay.x and 
-           playerData.x - playerData.size < bay.x + bay.w and
-           playerData.y + playerData.size > bay.y and 
-           playerData.y - playerData.size < bay.y + bay.h then
-            return true
-        end
-    end
-    
-    return false
-end
-
-function station.getProgress()
-    if not isActive then return 0, 0 end
-    return enemiesDefeated, totalEnemiesNeeded
-end
-
-function station.isActive()
-    return isActive
-end
-
-function station.getState()
-    return stationState
-end
-
-function station.checkPlayerDocking(playerData)
-    if not isActive or stationState ~= "docking_ready" then
-        return false
-    end
-    
-    local dockBays = {
-        {x = spaceStation.x - 20, y = spaceStation.y - 25, w = 30, h = 18},
-        {x = spaceStation.x - 20, y = spaceStation.y - 5, w = 30, h = 18},
-        {x = spaceStation.x - 20, y = spaceStation.y + 15, w = 30, h = 18}
-    }
-    
-    for _, bay in ipairs(dockBays) do
-        if playerData.x + playerData.size > bay.x and 
-           playerData.x - playerData.size < bay.x + bay.w and
-           playerData.y + playerData.size > bay.y and 
-           playerData.y - playerData.size < bay.y + bay.h then
-            return true
-        end
-    end
-    
-    return false
 end
 
 function station.getProgress()

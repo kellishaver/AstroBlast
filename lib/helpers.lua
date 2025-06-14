@@ -67,7 +67,7 @@ end
 function helpers.resetGame(gameState)
     gameState.state = "playing"
     gameState.score = 0
-    gameState.lives = 3
+    gameState.lives = config.PLAYER_LIVES
     gameState.distanceTraveled = 0
     gameState.nextPowerupScore = 300
     gameState.powerupIncrement = 300
