@@ -3,6 +3,7 @@
 -- User interface rendering
 local ui = {}
 local config = require("lib/config")
+local player = require("lib/player")
 
 function ui.load()
 end
@@ -35,6 +36,8 @@ function ui.drawLifeIcons(lives)
 end
 
 function ui.drawGameOver(score, highScore, distanceTraveled, font)
+    player.clearFlashOverlay()
+
     love.graphics.setColor(1, 0, 0)
     if font then love.graphics.setFont(font) end
     

@@ -40,6 +40,7 @@ function love.load()
     love.window.setMode(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
     love.graphics.setBackgroundColor(0.05, 0.05, 0.15)
     love.graphics.setFont(font)
+    love.mouse.setVisible(false)  -- Add this line to hide the cursor
 
     -- Initialize all modules
     player.load()
@@ -158,6 +159,8 @@ function love.draw()
     elseif gameState.state == "gameover" then
         ui.drawGameOver(gameState.score, gameState.highScore, gameState.distanceTraveled, font)
     end
+
+    player.drawFlashOverlay()
 end
 
 function love.keypressed(key)

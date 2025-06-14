@@ -12,8 +12,10 @@ local playerData = {
     vx = 0,
     vy = 0,
     missiles = {},
-    invulnerabilityTimer = 0
+    invulnerabilityTimer = 0,
+    flashTimer = 0
 }
+
 
 function player.load()
     player.reset()
@@ -59,6 +61,11 @@ function player.update(dt)
         playerData.invulnerabilityTimer = playerData.invulnerabilityTimer - dt
     end
     
+    -- Update flash timer
+    if playerData.flashTimer > 0 then
+        playerData.flashTimer = playerData.flashTimer - dt
+    end
+    
     -- Update missiles
     for i = #playerData.missiles, 1, -1 do
         local missile = playerData.missiles[i]
@@ -67,6 +74,19 @@ function player.update(dt)
             table.remove(playerData.missiles, i)
         end
     end
+end
+
+function player.drawFlashOverlay()
+    if playerData.flashTimer > 0 then
+        local alpha = (playerData.flashTimer / 0.3) * 0.3  -- Fade out effect
+        love.graphics.setColor(1, 0, 0, alpha)
+        love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+        love.graphics.setColor(1, 1, 1, 1)  -- Reset color
+    end
+end
+
+function player.clearFlashOverlay()
+    playerData.flashTimer = 0
 end
 
 function player.fireMissile()
@@ -107,6 +127,7 @@ end
 
 function player.takeDamage()
     playerData.invulnerabilityTimer = config.INVULNERABILITY_TIME
+    playerData.flashTimer = 0.3
     sound.play("playerHit")
 end
 
