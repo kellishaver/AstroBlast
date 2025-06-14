@@ -75,11 +75,14 @@ function love.update(dt)
         -- Handle collisions
         local playerHit = collision.checkAll(player, enemies, asteroids, powerups)
         if playerHit then
-            lives = lives - playerHit.damage
             if playerHit.type == "powerup" then
                 lives = lives + 1
+                sound.play("playerLife")
+            else
+                lives = lives - playerHit.damage
+                player.takeDamage()  -- Set invulnerability immediately
             end
-            
+
             if lives <= 0 then
                 gameState = "gameover"
                 if score > highScore then
@@ -114,7 +117,7 @@ function love.update(dt)
                 sound.play("playerLife")
             else
                 lives = lives - playerHit.damage
-                player.takeDamage()
+                player.takeDamage()  -- Set invulnerability immediately
             end
             
             if lives <= 0 then
@@ -125,7 +128,7 @@ function love.update(dt)
                 sound.stopGameMusic()
                 sound.play("gameOver")
             end
-        end
+end
         
         score = score + collision.getScoreThisFrame()
         
