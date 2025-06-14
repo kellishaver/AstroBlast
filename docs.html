@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroBlast - Space Shooter Game Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h1 { margin: 0; font-size: 2.5rem; }
+        h2 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #3498db; 
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        h3 { 
+            color: #34495e; 
+            margin-top: 1.5rem;
+            background: #ecf0f1;
+            padding: 0.5rem 1rem;
+            border-left: 4px solid #3498db;
+        }
+        h4 { color: #7f8c8d; margin-top: 1rem; }
+        
+        .toc {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .toc h2 { margin-top: 0; }
+        .toc ul { margin: 0; }
+        .toc li { margin: 0.25rem 0; }
+        .toc a { 
+            text-decoration: none; 
+            color: #3498db;
+            transition: color 0.2s;
+        }
+        .toc a:hover { color: #2980b9; }
+        
+        .module {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .module-header {
+            background: #34495e;
+            color: white;
+            padding: 1rem 1.5rem;
+            margin: 0;
+        }
+        .module-content {
+            padding: 1.5rem;
+        }
+        
+        .function {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+        .function-signature {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-weight: bold;
+            color: #d73a49;
+            margin-bottom: 0.5rem;
+        }
+        .function-description {
+            color: #586069;
+            margin-bottom: 0.5rem;
+        }
+        .parameters {
+            margin: 0.5rem 0;
+        }
+        .parameter {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #005cc5;
+            font-size: 0.9rem;
+        }
+        
+        .constants {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .constants h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .constant {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #6f42c1;
+            margin: 0.25rem 0;
+        }
+        
+        .dependencies {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .dependencies h4 {
+            margin-top: 0;
+            color: #0c5460;
+        }
+        .dependency {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #17a2b8;
+            margin: 0.25rem 0;
+        }
+        
+        .game-flow {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        code {
+            background: #f1f2f6;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #e83e8c;
+        }
+        
+        .architecture-diagram {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚀 AstroBlast</h1>
+            <p>Love2D Game Documentation</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>📚 Table of Contents</h2>
+            <ul>
+                <li><a href="#overview">Game Overview</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#game-flow">Game Flow</a></li>
+                <li><a href="#main">Main Game Loop</a></li>
+                <li><a href="#config">Configuration</a></li>
+                <li><a href="#player">Player Module</a></li>
+                <li><a href="#enemies">Enemies Module</a></li>
+                <li><a href="#asteroids">Asteroids Module</a></li>
+                <li><a href="#station">Station Module</a></li>
+                <li><a href="#station-renderer">Station Renderer</a></li>
+                <li><a href="#collision">Collision Detection</a></li>
+                <li><a href="#powerups">Powerups Module</a></li>
+                <li><a href="#effects">Visual Effects</a></li>
+                <li><a href="#sound">Sound System</a></li>
+                <li><a href="#ui">User Interface</a></li>
+                <li><a href="#helpers">Helper Functions</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>🎮 Game Overview</h2>
+            <p>AstroBlast is a retro-style space shooter built with Love2D featuring procedurally drawn vector graphics. Players pilot a ship through space, fighting enemies and asteroids,and earning powerups based on score. The game culminates with an intense battle and, if you live, a final space station docking sequence.</p>
+            
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Vector Graphics:</strong> All game objects drawn procedurally for that classic arcade feel</li>
+                <li><strong>Progressive Difficulty:</strong> Enemy spawn rates and fire rates increase with score</li>
+                <li><strong>Score-Based Powerups:</strong> Extra lives earned through skillful play</li>
+                <li><strong>Station Battle:</strong> Climactic final battle with automatic docking sequence</li>
+                <li><strong>Modular Architecture:</strong> Clean separation of concerns across modules</li>
+            </ul>
+        </section>
+
+        <div class="architecture-diagram">
+            <h3>🏗️ System Architecture</h3>
+            <pre style="text-align: left; background: #f8f9fa; padding: 1rem; border-radius: 4px;">
+main.lua
+├── lib/helpers.lua          (Game logic helpers)
+├── lib/config.lua           (Game configuration)
+├── lib/player.lua           (Player ship management)
+├── lib/enemies.lua          (Enemy ships and bullets)
+├── lib/asteroids.lua        (Asteroid spawning and physics)
+├── lib/station.lua          (Station battle logic)
+├── lib/station-renderer.lua (Station visual components)
+├── lib/collision.lua        (Collision detection system)
+├── lib/powerups.lua         (Powerup management)
+├── lib/effects.lua          (Visual effects and stars)
+├── lib/sound.lua            (Audio management)
+└── lib/ui.lua               (User interface rendering)
+            </pre>
+        </div>
+
+        <section id="game-flow" class="game-flow">
+            <h3>🎯 Game Flow</h3>
+            <ol>
+                <li><strong>Start Screen:</strong> Menu with title and instructions</li>
+                <li><strong>Playing:</strong> Normal gameplay with asteroids and enemies</li>
+                <li><strong>Station Approach:</strong> Space station appears and approaches</li>
+                <li><strong>Station Battle:</strong> Fight enemies around the station</li>
+                <li><strong>Auto Docking:</strong> Automated docking sequence</li>
+                <li><strong>Victory:</strong> Mission complete screen</li>
+                <li><strong>Game Over:</strong> Death screen with restart option</li>
+            </ol>
+        </section>
+
+        <div class="module" id="main">
+            <h2 class="module-header">📋 Main Game Loop (main.lua)</h2>
+            <div class="module-content">
+                <p>The central coordinator that manages game state, handles Love2D callbacks, and orchestrates all game systems.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/player, lib/enemies, lib/station, lib/asteroids</div>
+                    <div class="dependency">lib/powerups, lib/effects, lib/sound, lib/collision</div>
+                    <div class="dependency">lib/ui, lib/config, lib/helpers</div>
+                </div>
+
+                <h3>Game State Object</h3>
+                <div class="function">
+                    <div class="function-signature">gameState = { state, score, lives, ... }</div>
+                    <div class="function-description">Central state object containing all game variables and module references</div>
+                    <div class="parameters">
+                        <div class="parameter">state: Current game state ("start", "playing", "station_battle", etc.)</div>
+                        <div class="parameter">score: Player's current score</div>
+                        <div class="parameter">lives: Remaining player lives</div>
+                        <div class="parameter">distanceTraveled: Triggers station battle</div>
+                        <div class="parameter">dockingTimer, dockingSpeed, dockingStarted: Docking animation state</div>
+                    </div>
+                </div>
+
+                <h3>Love2D Callbacks</h3>
+                <div class="function">
+                    <div class="function-signature">love.load()</div>
+                    <div class="function-description">Initialize window, graphics, load all modules, start menu music</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">love.update(dt)</div>
+                    <div class="function-description">Main game loop - updates all systems based on current game state</div>
+                    <div class="parameters">
+                        <div class="parameter">dt: Delta time for frame-rate independent updates</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">love.draw()</div>
+                    <div class="function-description">Renders all game objects based on current state</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">love.keypressed(key)</div>
+                    <div class="function-description">Handles keyboard input for state transitions and player actions</div>
+                    <div class="parameters">
+                        <div class="parameter">key: The pressed key ("return", "space", "r", "escape")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module" id="config">
+            <h2 class="module-header">⚙️ Configuration (lib/config.lua)</h2>
+            <div class="module-content">
+                <p>Central configuration file containing all game constants and tuning parameters.</p>
+                
+                <div class="constants">
+                    <h4>Screen Settings</h4>
+                    <div class="constant">SCREEN_WIDTH = 800</div>
+                    <div class="constant">SCREEN_HEIGHT = 600</div>
+                </div>
+
+                <div class="constants">
+                    <h4>Player Settings</h4>
+                    <div class="constant">PLAYER_SPEED = 300</div>
+                    <div class="constant">PLAYER_SIZE = 15</div>
+                    <div class="constant">PLAYER_LIVES = 4</div>
+                    <div class="constant">INVULNERABILITY_TIME = 2.0</div>
+                </div>
+
+                <div class="constants">
+                    <h4>Missile Settings</h4>
+                    <div class="constant">MISSILE_SPEED = 500</div>
+                    <div class="constant">MAX_MISSILES = 5</div>
+                    <div class="constant">MISSILE_WIDTH = 8, MISSILE_HEIGHT = 3</div>
+                </div>
+
+                <div class="constants">
+                    <h4>Enemy Settings</h4>
+                    <div class="constant">ENEMY_SPEED = 180</div>
+                    <div class="constant">ENEMY_SIZE = 18</div>
+                    <div class="constant">ENEMY_SPAWN_RATE = 4.0 (progressive)</div>
+                    <div class="constant">ENEMY_FIRE_RATE = 2.0 (progressive)</div>
+                </div>
+
+                <div class="constants">
+                    <h4>Station Battle Settings</h4>
+                    <div class="constant">STATION_TRIGGER_DISTANCE = 20000</div>
+                    <div class="constant">STATION_ENEMIES_TO_DEFEAT = 20</div>
+                    <div class="constant">STATION_ENEMY_SPAWN_RATE = 1.0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module" id="player">
+            <h2 class="module-header">🚀 Player Module (lib/player.lua)</h2>
+            <div class="module-content">
+                <p>Manages the player ship including movement, missile firing, collision state, and rendering.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for speeds and sizes)</div>
+                    <div class="dependency">lib/sound (for missile and hit sounds)</div>
+                </div>
+
+                <h3>Player Data Structure</h3>
+                <div class="function">
+                    <div class="function-signature">playerData = { x, y, size, vx, vy, missiles[], invulnerabilityTimer }</div>
+                    <div class="function-description">Internal player state including position, velocity, missiles, and invulnerability</div>
+                </div>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">player.load()</div>
+                    <div class="function-description">Initialize player module and reset to starting state</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.reset()</div>
+                    <div class="function-description">Reset player to starting position, clear missiles, remove invulnerability</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.update(dt)</div>
+                    <div class="function-description">Handle input, update position, manage invulnerability timer, update missiles</div>
+                    <div class="parameters">
+                        <div class="parameter">dt: Delta time for movement calculations</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.fireMissile()</div>
+                    <div class="function-description">Create new missile if under MAX_MISSILES limit, play sound effect</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.draw()</div>
+                    <div class="function-description">Render player ship and missiles, handle invulnerability flashing</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.takeDamage()</div>
+                    <div class="function-description">Set invulnerability timer, play hit sound</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.isInvulnerable() → boolean</div>
+                    <div class="function-description">Check if player is currently invulnerable to damage</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">player.getData() → playerData</div>
+                    <div class="function-description">Get reference to internal player data for collision detection</div>
+                </div>
+
+                <h3>Input Handling</h3>
+                <ul>
+                    <li><strong>WASD / Arrow Keys:</strong> Ship movement</li>
+                    <li><strong>Movement:</strong> Frame-rate independent with screen boundary constraints</li>
+                    <li><strong>Invulnerability:</strong> 2-second immunity after taking damage with visual flashing</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="enemies">
+            <h2 class="module-header">👾 Enemies Module (lib/enemies.lua)</h2>
+            <div class="module-content">
+                <p>Manages enemy ships, their AI behavior, bullet firing, and progressive difficulty scaling.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for enemy parameters)</div>
+                    <div class="dependency">lib/sound (for firing and destruction sounds)</div>
+                    <div class="dependency">lib/player (for targeting calculations)</div>
+                    <div class="dependency">lib/station (for defeat notifications)</div>
+                </div>
+
+                <h3>Enemy Data Structure</h3>
+                <div class="function">
+                    <div class="function-signature">enemy = { x, y, size, speed, fireTimer, bulletCount, rotation, targetRotation, rotationSpeed }</div>
+                    <div class="function-description">Individual enemy state with position, timing, and rotation for targeting</div>
+                </div>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">enemies.update(dt, score)</div>
+                    <div class="function-description">Update all enemies: spawning, movement, targeting, firing. Difficulty scales with score</div>
+                    <div class="parameters">
+                        <div class="parameter">dt: Delta time for movement and timing</div>
+                        <div class="parameter">score: Current score for difficulty scaling</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">enemies.updateStationBattle(dt)</div>
+                    <div class="function-description">Special update for station battle with different spawn logic</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">enemies.spawn()</div>
+                    <div class="function-description">Create new enemy at right edge of screen with randomized parameters</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">enemies.fireAtPlayer(enemy, player, score)</div>
+                    <div class="function-description">Calculate targeting angle and create bullet aimed at player position</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">enemies.draw()</div>
+                    <div class="function-description">Render all enemies as rotated polygons and bullets as circles</div>
+                </div>
+
+                <h3>AI Behavior</h3>
+                <ul>
+                    <li><strong>Targeting:</strong> Enemies rotate to face player before firing</li>
+                    <li><strong>Fire Rate:</strong> Limited bullets per ship, progressive fire rate</li>
+                    <li><strong>Movement:</strong> Scroll left at constant speed</li>
+                    <li><strong>Progressive Difficulty:</strong> Spawn and fire rates increase with score</li>
+                </ul>
+
+                <h3>Difficulty Scaling</h3>
+                <div class="function">
+                    <div class="function-signature">Spawn Rate: max(1.5, 4.0 - floor(score/400) * 0.5)</div>
+                    <div class="function-description">Enemy spawn rate decreases (more frequent) as score increases</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">Fire Rate: max(0.8, 2.0 - floor(score/600) * 0.3)</div>
+                    <div class="function-description">Fire rate decreases (more frequent) as score increases</div>
+                </div>
+            </div>
+        </div>
+   
+        <div class="module" id="asteroids">
+            <h2 class="module-header">🪨 Asteroids Module (lib/asteroids.lua)</h2>
+            <div class="module-content">
+                <p>Manages asteroid spawning, physics, breakage mechanics, and procedural shape generation.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for asteroid parameters and sizes)</div>
+                    <div class="dependency">lib/sound (for impact sounds)</div>
+                </div>
+
+                <h3>Asteroid Data Structure</h3>
+                <div class="function">
+                    <div class="function-signature">asteroid = { x, y, size, radius, speed, rotation, rotationSpeed, points[] }</div>
+                    <div class="function-description">Individual asteroid with procedurally generated shape points and physics data</div>
+                </div>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">asteroids.update(dt, score)</div>
+                    <div class="function-description">Update spawn timing, move asteroids, rotate them, remove off-screen asteroids</div>
+                    <div class="parameters">
+                        <div class="parameter">dt: Delta time for movement and rotation</div>
+                        <div class="parameter">score: Current score for progressive spawn rate</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">asteroids.spawn(size, x, y)</div>
+                    <div class="function-description">Create new asteroid with procedurally generated irregular shape</div>
+                    <div class="parameters">
+                        <div class="parameter">size: "small", "medium", or "large" (default: "large")</div>
+                        <div class="parameter">x, y: Position (default: right edge, random Y)</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">asteroids.breakAsteroid(index)</div>
+                    <div class="function-description">Destroy asteroid and spawn smaller fragments at random angles</div>
+                    <div class="parameters">
+                        <div class="parameter">index: Index of asteroid to break in asteroidList</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">asteroids.draw()</div>
+                    <div class="function-description">Render all asteroids as filled polygons with outlines, applying rotation</div>
+                </div>
+
+                <h3>Procedural Generation</h3>
+                <ul>
+                    <li><strong>Shape Generation:</strong> Each asteroid gets unique irregular shape with radius variation (70-130%)</li>
+                    <li><strong>Size Classes:</strong> Large (radius 32, 10 points) → Medium (radius 20, 8 points) → Small (radius 12, 6 points)</li>
+                    <li><strong>Breakage:</strong> Large asteroids spawn 2-3 medium pieces, medium spawn 1-2 small pieces</li>
+                    <li><strong>Rotation:</strong> Random rotation speed (-2 to +2 rad/s) for visual variety</li>
+                </ul>
+
+                <div class="constants">
+                    <h4>Asteroid Sizes</h4>
+                    <div class="constant">LARGE: radius=32, points=10</div>
+                    <div class="constant">MEDIUM: radius=20, points=8</div>
+                    <div class="constant">SMALL: radius=12, points=6</div>
+                </div>
+
+                <h3>Progressive Difficulty</h3>
+                <div class="function">
+                    <div class="function-signature">Spawn Rate: max(0.8, 1.5 - floor(score/1000) * 0.2)</div>
+                    <div class="function-description">Asteroid spawn rate increases as score grows</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module" id="station">
+            <h2 class="module-header">🛰️ Station Module (lib/station.lua)</h2>
+            <div class="module-content">
+                <p>Manages the space station battle sequence, approach animation, enemy defeat tracking, and docking mechanics.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for station parameters)</div>
+                    <div class="dependency">lib/sound (for audio transitions)</div>
+                    <div class="dependency">lib/station-renderer (for visual rendering)</div>
+                </div>
+
+                <h3>Station Data Structure</h3>
+                <div class="function">
+                    <div class="function-signature">spaceStation = { x, y, targetX, width, height, dockingBayLit, rotationOffset }</div>
+                    <div class="function-description">Station position, size, docking state, and animation data</div>
+                </div>
+
+                <h3>Station States</h3>
+                <ul>
+                    <li><strong>"approaching":</strong> Station scrolls in from right side</li>
+                    <li><strong>"arrived":</strong> Station stopped at target position, battle in progress</li>
+                    <li><strong>"docking_ready":</strong> All enemies defeated, docking bays lit green</li>
+                    <li><strong>"docking":</strong> Player docking animation in progress</li>
+                </ul>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">station.activate()</div>
+                    <div class="function-description">Start station sequence: reset counters, set approaching state</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">station.update(dt) → state_result</div>
+                    <div class="function-description">Update station position, check victory conditions, manage states</div>
+                    <div class="parameters">
+                        <div class="parameter">dt: Delta time for movement and rotation animation</div>
+                        <div class="parameter">Returns: "approaching", "station_arrived", "docking_ready", or nil</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">station.enemyDefeated()</div>
+                    <div class="function-description">Increment enemy defeat counter, called by enemies module</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">station.startDocking() → boolean</div>
+                    <div class="function-description">Begin docking sequence if conditions are met</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">station.getDockingTarget() → {x, y}</div>
+                    <div class="function-description">Get target position for automatic docking animation</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">station.checkPlayerDocking(playerData) → boolean</div>
+                    <div class="function-description">Check if player is within any docking bay area</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">station.draw()</div>
+                    <div class="function-description">Delegate rendering to station-renderer module</div>
+                </div>
+
+                <h3>Battle Victory Condition</h3>
+                <div class="function">
+                    <div class="function-signature">enemiesDefeated >= STATION_ENEMIES_TO_DEFEAT (20)</div>
+                    <div class="function-description">When 20 enemies are defeated, docking bays light up green and auto-docking begins</div>
+                </div>
+
+                <h3>Docking Bays</h3>
+                <ul>
+                    <li><strong>Three Bays:</strong> Top, middle, bottom positions on station left side</li>
+                    <li><strong>Visual Feedback:</strong> Red/orange when locked, green when ready</li>
+                    <li><strong>Auto-Docking:</strong> Player automatically moves to middle bay when victory achieved</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="station-renderer">
+            <h2 class="module-header">🎨 Station Renderer (lib/station-renderer.lua)</h2>
+            <div class="module-content">
+                <p>Modular rendering system for the space station with separate functions for each visual component.</p>
+                
+                <h3>Design Philosophy</h3>
+                <p>Separated from station logic for maintainability. Each component can be modified independently without affecting game mechanics.</p>
+
+                <h3>Rendering Components</h3>
+                <div class="function">
+                    <div class="function-signature">renderer.drawMainHull(stationData)</div>
+                    <div class="function-description">Draw main station structure: hull and central core cylinder</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawCommandModule(stationData, centerX, centerY)</div>
+                    <div class="function-description">Draw oval command section with connecting neck, windows, and details</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawRotatingRing(stationData, centerX, centerY)</div>
+                    <div class="function-description">Draw animated rotating ring around station center</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawDockingBays(stationData)</div>
+                    <div class="function-description">Draw three docking bays with state-based coloring (red/green)</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawAntennas(stationData, centerX, centerY)</div>
+                    <div class="function-description">Draw communication arrays on command module and main hull</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawSolarPanels(stationData)</div>
+                    <div class="function-description">Draw solar panel arrays with grid detail lines</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawWindows(stationData)</div>
+                    <div class="function-description">Draw illuminated viewports and observation windows</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawLights(stationData, centerX, centerY)</div>
+                    <div class="function-description">Draw blinking navigation (blue) and warning (red) lights</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawEngineGlow(stationData, centerY, stationState)</div>
+                    <div class="function-description">Draw thruster glow effects when station is approaching</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.drawStatusIndicators(stationData)</div>
+                    <div class="function-description">Draw status lights that change color based on docking readiness</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">renderer.renderStation(stationData, stationState)</div>
+                    <div class="function-description">Main coordinator function that calls all component renderers in order</div>
+                </div>
+
+                <h3>Visual Details</h3>
+                <ul>
+                    <li><strong>Lighting Effects:</strong> Blinking navigation lights at different frequencies</li>
+                    <li><strong>Animation:</strong> Rotating ring segments, thruster glow during approach</li>
+                    <li><strong>State Feedback:</strong> Docking bays change from orange to green when ready</li>
+                    <li><strong>Depth Layers:</strong> Hull → Details → Lights → Effects for proper z-ordering</li>
+                </ul>
+
+                <h3>Maintainability Benefits</h3>
+                <ul>
+                    <li><strong>Single Responsibility:</strong> Each function handles one visual component</li>
+                    <li><strong>Easy Modification:</strong> Change antenna design without touching docking logic</li>
+                    <li><strong>Debug Friendly:</strong> Can comment out individual components for testing</li>
+                    <li><strong>Extensible:</strong> Easy to add damage effects, different station types</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="collision">
+            <h2 class="module-header">💥 Collision Detection (lib/collision.lua)</h2>
+            <div class="module-content">
+                <p>Comprehensive collision detection system handling player safety, missile impacts, and score tracking.</p>
+                
+                <h3>Collision Categories</h3>
+                <div class="function">
+                    <div class="function-signature">collision.checkAll(player, enemies, asteroids, powerups)</div>
+                    <div class="function-description">Full collision checking for normal gameplay (includes asteroids)</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">collision.checkstationBattle(player, enemies, powerups)</div>
+                    <div class="function-description">Station battle collision checking (no asteroids)</div>
+                </div>
+
+                <h3>Player Collision Types</h3>
+                <div class="function">
+                    <div class="function-signature">collision.checkPlayerAsteroids(playerData, asteroids)</div>
+                    <div class="function-description">Player vs asteroids - breaks asteroid, damages player</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">collision.checkPlayerEnemyBullets(playerData, enemies)</div>
+                    <div class="function-description">Player vs enemy bullets - removes bullet, damages player</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">collision.checkPlayerEnemies(playerData, enemies)</div>
+                    <div class="function-description">Player vs enemy ships - removes enemy, damages player</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">collision.checkPlayerPowerups(playerData, powerups)</div>
+                    <div class="function-description">Player vs powerups - removes powerup, heals player (negative damage)</div>
+                </div>
+
+                <h3>Missile Collision Types</h3>
+                <div class="function">
+                    <div class="function-signature">collision.checkMissileTargets(playerData, enemies, asteroids)</div>
+                    <div class="function-description">Player missiles vs all targets (normal gameplay)</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">collision.checkMissileEnemies(playerData, enemies)</div>
+                    <div class="function-description">Player missiles vs enemies only (station battle)</div>
+                </div>
+
+                <h3>Collision Response System</h3>
+                <div class="function">
+                    <div class="function-signature">Hit Result: {damage, type}</div>
+                    <div class="function-description">Collision functions return damage amount and collision type</div>
+                    <div class="parameters">
+                        <div class="parameter">damage: 1 for harm, -1 for powerups</div>
+                        <div class="parameter">type: "asteroid", "bullet", "enemy", "powerup"</div>
+                    </div>
+                </div>
+
+                <h3>Safety Features</h3>
+                <ul>
+                    <li><strong>Invulnerability Respect:</strong> Player collisions only checked when not invulnerable</li>
+                    <li><strong>Powerup Priority:</strong> Powerups always processed regardless of invulnerability</li>
+                    <li><strong>Missile Management:</strong> Missiles removed on impact to prevent multiple hits</li>
+                    <li><strong>Score Tracking:</strong> Frame-based score accumulation prevents double-counting</li>
+                </ul>
+
+                <h3>Scoring System</h3>
+                <div class="constants">
+                    <h4>Point Values</h4>
+                    <div class="constant">Asteroid Hit: 10 points</div>
+                    <div class="constant">Enemy Destroyed: 50 points</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">collision.getScoreThisFrame() → score</div>
+                    <div class="function-description">Get accumulated score for current frame, reset for next frame</div>
+                </div>
+
+                <h3>Collision Detection Method</h3>
+                <ul>
+                    <li><strong>Circle-Circle:</strong> Simple distance-based collision for all objects</li>
+                    <li><strong>Size Factors:</strong> Player collision radius reduced to 80% for forgiveness</li>
+                    <li><strong>Performance:</strong> Early returns prevent unnecessary checks</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="powerups">
+            <h2 class="module-header">💊 Powerups Module (lib/powerups.lua)</h2>
+            <div class="module-content">
+                <p>Manages life-restoring powerups that spawn based on player score achievements.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for powerup parameters)</div>
+                    <div class="dependency">lib/sound (for collection sound)</div>
+                </div>
+
+                <h3>Powerup Data Structure</h3>
+                <div class="function">
+                    <div class="function-signature">powerup = { x, y, size, speed }</div>
+                    <div class="function-description">Simple moving powerup with standard scroll speed</div>
+                </div>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">powerups.spawn()</div>
+                    <div class="function-description">Create new powerup at right edge with random Y position</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">powerups.update(dt)</div>
+                    <div class="function-description">Move powerups left, remove off-screen ones</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">powerups.draw()</div>
+                    <div class="function-description">Render powerups as green diamond shapes with outlines</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">powerups.removePowerup(index)</div>
+                    <div class="function-description">Remove collected powerup and play collection sound</div>
+                </div>
+
+                <h3>Score-Based Spawning</h3>
+                <p>Powerups spawn based on score milestones, encouraging aggressive play:</p>
+                <ul>
+                    <li><strong>First powerup:</strong> 300 points</li>
+                    <li><strong>Second powerup:</strong> 700 points (300 + 400)</li>
+                    <li><strong>Third powerup:</strong> 1200 points (700 + 500)</li>
+                    <li><strong>Pattern:</strong> Increment increases by 100 each time</li>
+                </ul>
+
+                <div class="function">
+                    <div class="function-signature">nextPowerupScore = currentScore + powerupIncrement</div>
+                    <div class="function-description">Progressive scoring system rewards consistent performance</div>
+                </div>
+
+                <h3>Design Philosophy</h3>
+                <ul>
+                    <li><strong>Skill Reward:</strong> Extra lives earned through scoring, not survival</li>
+                    <li><strong>Risk/Reward:</strong> Encourages engaging enemies rather than dodging</li>
+                    <li><strong>Progressive Challenge:</strong> Later powerups require higher score achievements</li>
+                    <li><strong>Boss Preparation:</strong> Skilled players enter station battle with life buffer</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="effects">
+            <h2 class="module-header">✨ Visual Effects (lib/effects.lua)</h2>
+            <div class="module-content">
+                <p>Manages the scrolling starfield background that creates the sense of movement through space.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for star parameters and screen dimensions)</div>
+                </div>
+
+                <h3>Star Data Structure</h3>
+                <div class="function">
+                    <div class="function-signature">star = { x, y, speed, brightness, size }</div>
+                    <div class="function-description">Individual star with parallax speed, random brightness, and size variation</div>
+                </div>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">effects.generateStars()</div>
+                    <div class="function-description">Create initial starfield with random positions, speeds, and properties</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">effects.updateStars(dt)</div>
+                    <div class="function-description">Move stars left, wrap around screen edges, regenerate properties</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">effects.drawStars()</div>
+                    <div class="function-description">Render stars as points or small circles based on size</div>
+                </div>
+
+                <h3>Parallax Effect</h3>
+                <ul>
+                    <li><strong>Speed Variation:</strong> Stars move at different speeds (50-200 pixels/sec)</li>
+                    <li><strong>Depth Illusion:</strong> Faster stars appear closer, slower stars appear distant</li>
+                    <li><strong>Brightness Variation:</strong> Random brightness (30-100%) adds visual depth</li>
+                    <li><strong>Size Variation:</strong> Mix of single pixels and small circles</li>
+                </ul>
+
+                <div class="constants">
+                    <h4>Star Field Parameters</h4>
+                    <div class="constant">STAR_COUNT = 200</div>
+                    <div class="constant">STAR_SPEED_MIN = 50</div>
+                    <div class="constant">STAR_SPEED_MAX = 200</div>
+                </div>
+
+                <h3>Performance Notes</h3>
+                <ul>
+                    <li><strong>Efficient Rendering:</strong> Uses love.graphics.points() for single-pixel stars</li>
+                    <li><strong>Seamless Wrapping:</strong> Stars regenerate properties when wrapping for variety</li>
+                    <li><strong>State Independence:</strong> Disabled during station battle for darker atmosphere</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="sound">
+            <h2 class="module-header">🔊 Sound System (lib/sound.lua)</h2>
+            <div class="module-content">
+                <p>Centralized audio management with music loops and sound effects for all game events.</p>
+                
+                <h3>Audio Assets</h3>
+                <div class="constants">
+                    <h4>Music Loops</h4>
+                    <div class="constant">menuLoop: Main menu background music</div>
+                    <div class="constant">gameLoop: Normal gameplay music</div>
+                    <div class="constant">stationLoop: Station battle music</div>
+                </div>
+
+                <div class="constants">
+                    <h4>Sound Effects</h4>
+                    <div class="constant">playerMissile: Player firing sound</div>
+                    <div class="constant">enemyMissile: Enemy firing sound</div>
+                    <div class="constant">asteroidHit: Asteroid destruction</div>
+                    <div class="constant">enemyDestroyed: Enemy death</div>
+                    <div class="constant">playerHit: Player taking damage</div>
+                    <div class="constant">playerLife: Powerup collection</div>
+                    <div class="constant">gameOver: Death/failure sound</div>
+                    <div class="constant">victory: Mission completion</div>
+                </div>
+
+                <h3>Core Functions</h3>
+                <div class="function">
+                    <div class="function-signature">sound.load()</div>
+                    <div class="function-description">Initialize all audio sources, set looping flags for music</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">sound.play(soundName)</div>
+                    <div class="function-description">Play named sound effect if it exists</div>
+                    <div class="parameters">
+                        <div class="parameter">soundName: String key matching loaded sound assets</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">sound.playMenuMusic() / playGameMusic() / playStationMusic()</div>
+                    <div class="function-description">Start specific music loops for different game states</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">sound.stopMenuMusic() / stopGameMusic() / stopStationMusic()</div>
+                    <div class="function-description">Stop specific music loops for clean transitions</div>
+                </div>
+
+                <h3>Audio Design</h3>
+                <ul>
+                    <li><strong>Music Progression:</strong> Menu → Game → Station → Victory sequence</li>
+                    <li><strong>Seamless Transitions:</strong> Stop previous music before starting new</li>
+                    <li><strong>Feedback System:</strong> Every player action has audio confirmation</li>
+                    <li><strong>Atmospheric Changes:</strong> Different music for station battle intensity</li>
+                </ul>
+
+                <h3>Usage Pattern</h3>
+                <div class="function">
+                    <div class="function-signature">Game State Transitions</div>
+                    <div class="function-description">Music changes reinforce state transitions and create emotional progression</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module" id="ui">
+            <h2 class="module-header">📺 User Interface (lib/ui.lua)</h2>
+            <div class="module-content">
+                <p>Handles all on-screen UI elements including HUD, menus, and status displays.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/config (for screen dimensions)</div>
+                    <div class="dependency">Font: assets/upheavtt.ttf (custom game font)</div>
+                </div>
+
+                <h3>UI Functions</h3>
+                <div class="function">
+                    <div class="function-signature">ui.drawHUD(score, lives)</div>
+                    <div class="function-description">Draw main gameplay HUD with score and life indicators</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">ui.drawLifeIcons(lives)</div>
+                    <div class="function-description">Draw ship-shaped life indicators in top-right corner</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">ui.drawStationHUD(score, lives, defeated, needed)</div>
+                    <div class="function-description">Station battle HUD with enemy counter and docking status</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">ui.drawGameOver(score, highScore, font)</div>
+                    <div class="function-description">Game over screen with score display and restart instructions</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">ui.drawVictory(score, highScore)</div>
+                    <div class="function-description">Victory screen with mission completion message and final score</div>
+                </div>
+
+                <h3>UI Design Elements</h3>
+                <ul>
+                    <li><strong>Score Display:</strong> Top-left corner, large readable font</li>
+                    <li><strong>Life Icons:</strong> Ship silhouettes in top-right, visual consistency</li>
+                    <li><strong>Station Progress:</strong> "Hostiles Remaining" counter during station battle</li>
+                    <li><strong>Status Messages:</strong> "DOCKING IN PROGRESS", "MISSION COMPLETE"</li>
+                    <li><strong>High Score Tracking:</strong> Persistent high score display and new record celebration</li>
+                </ul>
+
+                <h3>Visual Hierarchy</h3>
+                <ul>
+                    <li><strong>Color Coding:</strong> White for score, blue for lives, yellow for warnings, green for success</li>
+                    <li><strong>Font Consistency:</strong> Custom upheavtt.ttf font for retro sci-fi aesthetic</li>
+                    <li><strong>Screen Position:</strong> Important info in corners, messages centered</li>
+                    <li><strong>State Awareness:</strong> Different HUD elements for different game phases</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="module" id="helpers">
+            <h2 class="module-header">🛠️ Helper Functions (lib/helpers.lua)</h2>
+            <div class="module-content">
+                <p>Reusable game logic functions that eliminate code duplication and provide consistent behavior across game states.</p>
+                
+                <div class="dependencies">
+                    <h4>Dependencies</h4>
+                    <div class="dependency">lib/collision (for collision detection functions)</div>
+                    <div class="dependency">lib/sound (for audio management)</div>
+                    <div class="dependency">lib/config (for game constants)</div>
+                </div>
+
+                <h3>Core Helper Functions</h3>
+                <div class="function">
+                    <div class="function-signature">helpers.handleCollisions(gameState, collisionCheckFunc, includeAsteroids)</div>
+                    <div class="function-description">Unified collision handling for all game states with appropriate audio and state management</div>
+                    <div class="parameters">
+                        <div class="parameter">gameState: Reference to main game state object</div>
+                        <div class="parameter">collisionCheckFunc: Specific collision function to use</div>
+                        <div class="parameter">includeAsteroids: Boolean for collision function parameter count</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">helpers.checkPowerupSpawn(gameState)</div>
+                    <div class="function-description">Handle score-based powerup spawning with progressive increment system</div>
+                </div>
+
+                <div class="function">
+                    <div class="function-signature">helpers.updateGameplay(dt, gameState, checkDistance)</div>
+                    <div class="function-description">Standard gameplay update routine shared between playing and station_approach states</div>
+                    <div class="parameters">
+                        <div class="parameter">checkDistance: Whether to check for station trigger distance</div>
+                    </div>
+                </div>
+
+                <div class="function">
+                <!DOCTYPE html>
+
+         </div>
+</body>
+</html>
