@@ -5,12 +5,10 @@ local ui = {}
 local config = require("lib/config")
 
 function ui.load()
-    -- Initialize UI elements if needed
 end
 
 function ui.drawHUD(score, lives)
     -- Draw score
-    local font     = love.graphics.newFont("assets/upheavtt.ttf", 30)
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(score, font, 10, 10)
     -- love.graphics.print(score, 10, 10, 0, 2, 2)
@@ -56,7 +54,6 @@ end
 
 function ui.drawBossHUD(score, lives, defeated, needed)
     -- Draw normal HUD
-    local font = love.graphics.newFont("assets/upheavtt.ttf", 30)
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(score, font, 10, 10)
     
@@ -64,20 +61,15 @@ function ui.drawBossHUD(score, lives, defeated, needed)
     ui.drawLifeIcons(lives)
     
     -- Draw boss progress
-    love.graphics.setColor(1, 1, 0.2)
-    love.graphics.print("Hostiles Remaining: " .. (needed - defeated), 10, config.SCREEN_HEIGHT - 40)
-    
-    if defeated >= needed then
-        love.graphics.setColor(0.2, 1, 0.3)
-        love.graphics.print("DOCKING SEQUENCE INITIATED!", config.SCREEN_WIDTH/2 - 120, config.SCREEN_HEIGHT - 60)
+    if defeated < needed then
+        love.graphics.setColor(1, 1, 0.2)
+        love.graphics.print("Hostiles Remaining: " .. (needed - defeated), 10, config.SCREEN_HEIGHT - 40)
     end
 end
 
 function ui.drawVictory(score, highScore)
-    local font = love.graphics.newFont("assets/upheavtt.ttf", 30)
     love.graphics.setColor(0.2, 1, 0.3)
-    if font then love.graphics.setFont(font) end
-    
+
     local victoryText = "MISSION COMPLETE!\nStation Secured!\nFinal Score: " .. score
     
     if score > highScore then

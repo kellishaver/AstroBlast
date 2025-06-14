@@ -180,14 +180,13 @@ function enemies.removeEnemy(index)
     sound.play("enemyDestroyed")
 end
 
-function enemies.removeBullet(index)
+function enemies.removeAllBullets()
     local bullet = enemyBullets[index]
     if bullet.owner then
         bullet.owner.bulletCount = bullet.owner.bulletCount - 1
     end
     table.remove(enemyBullets, index)
 end
-
 function enemies.updateBossBattle(dt)
     -- Different enemy spawning logic for boss battle
     local baseSpawnRate = config.BOSS_ENEMY_SPAWN_RATE

@@ -9,22 +9,21 @@ local spaceStation = {}
 local enemiesDefeated = 0
 local totalEnemiesNeeded = 0
 local isActive = false
-local stationState = "approaching" -- approaching, arrived, docking_ready, docking
+local stationState = "approaching"
 
 function boss.load()
     boss.reset()
-    sound.playBossMusic()
 end
 
 function boss.reset()
     spaceStation = {
-        x = config.SCREEN_WIDTH + 300, -- Start off-screen to the right
+        x = config.SCREEN_WIDTH + 300,
         y = config.SCREEN_HEIGHT / 2,
-        targetX = config.SCREEN_WIDTH - 200, -- Final position
+        targetX = config.SCREEN_WIDTH - 200,
         width = 160,
         height = 120,
         dockingBayLit = false,
-        rotationOffset = 0 -- For rotating elements
+        rotationOffset = 0
     }
     enemiesDefeated = 0
     totalEnemiesNeeded = config.BOSS_ENEMIES_TO_DEFEAT
@@ -38,6 +37,7 @@ function boss.activate()
     totalEnemiesNeeded = config.BOSS_ENEMIES_TO_DEFEAT
     spaceStation.dockingBayLit = false
     stationState = "approaching"
+
     -- Station starts off-screen and will scroll in
     spaceStation.x = config.SCREEN_WIDTH + 300
 end
@@ -50,10 +50,8 @@ function boss.update(dt)
     
     -- Handle station approach
     if stationState == "approaching" then
-        -- Move station in at scroll speed
         spaceStation.x = spaceStation.x - config.SCROLL_SPEED * dt
         
-        -- Check if station has reached its target position
         if spaceStation.x <= spaceStation.targetX then
             spaceStation.x = spaceStation.targetX
             stationState = "arrived"
