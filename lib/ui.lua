@@ -11,7 +11,6 @@ function ui.drawHUD(score, lives)
     -- Draw score
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(score, font, 10, 10)
-    -- love.graphics.print(score, 10, 10, 0, 2, 2)
     
     -- Draw life icons
     ui.drawLifeIcons(lives)
@@ -35,8 +34,7 @@ function ui.drawLifeIcons(lives)
     end
 end
 
-function ui.drawGameOver(score, highScore, font)
-    local font     = love.graphics.newFont("assets/upheavtt.ttf", 30)
+function ui.drawGameOver(score, highScore, distanceTraveled, font)
     love.graphics.setColor(1, 0, 0)
     if font then love.graphics.setFont(font) end
     
@@ -46,10 +44,39 @@ function ui.drawGameOver(score, highScore, font)
         gameOverText = gameOverText .. "\nHigh Score: " .. highScore
     end
     
-    gameOverText = gameOverText .. "\nPress R to restart"
+    -- Add progress to station
+    local progressPercent = math.floor((distanceTraveled / config.STATION_TRIGGER_DISTANCE) * 100)
+    progressPercent = math.min(100, progressPercent) -- Cap at 100%
+    
+    gameOverText = gameOverText .. "\n\nProgress to Station: " .. progressPercent .. "%"
+    
+    -- Show distance in a more readable format
+    local distanceKm = math.floor(distanceTraveled / 100) -- Convert to "kilometers" for display
+    local targetKm = math.floor(config.STATION_TRIGGER_DISTANCE / 100)
+    gameOverText = gameOverText .. "\nDistance: " .. distanceKm .. "/" .. targetKm .. " km"
+    
+    -- Encouraging message based on progress
+    if progressPercent >= 90 then
+        love.graphics.setColor(1, 1, 0)
+        gameOverText = gameOverText .. "\n\nSO CLOSE! The station is right there!"
+    elseif progressPercent >= 75 then
+        love.graphics.setColor(1, 0.8, 0)
+        gameOverText = gameOverText .. "\n\nAlmost there! Keep pushing!"
+    elseif progressPercent >= 50 then
+        love.graphics.setColor(1, 0.6, 0)
+        gameOverText = gameOverText .. "\n\nHalfway to the station!"
+    elseif progressPercent >= 25 then
+        love.graphics.setColor(1, 0.4, 0)
+        gameOverText = gameOverText .. "\n\nMaking good progress!"
+    else
+        love.graphics.setColor(1, 0, 0)
+        gameOverText = gameOverText .. "\n\nKeep fighting! The station awaits!"
+    end
+    
+    gameOverText = gameOverText .. "\n\nPress R to restart"
     
     love.graphics.printf(gameOverText, 
-                       0, config.SCREEN_HEIGHT/2 - 40, config.SCREEN_WIDTH, "center")
+                       0, config.SCREEN_HEIGHT/2 - 140, config.SCREEN_WIDTH, "center")
 end
 
 function ui.drawStationHUD(score, lives, defeated, needed)

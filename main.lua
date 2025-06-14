@@ -156,7 +156,7 @@ function love.draw()
         ui.drawVictory(gameState.score, gameState.highScore)
         
     elseif gameState.state == "gameover" then
-        ui.drawGameOver(gameState.score, gameState.highScore, font)
+        ui.drawGameOver(gameState.score, gameState.highScore, gameState.distanceTraveled, font)
     end
 end
 

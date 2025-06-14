@@ -48,7 +48,7 @@ config.SCROLL_SPEED = 220
 
 -- Battle for station settings
 config.STATION_TRIGGER_DISTANCE = 20000
-config.STATION_ENEMIES_TO_DEFEAT = 20
+config.STATION_ENEMIES_TO_DEFEAT = 24
 config.STATION_ENEMY_SPAWN_RATE = 1.0
 
 return config
