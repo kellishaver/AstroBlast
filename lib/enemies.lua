@@ -188,7 +188,7 @@ function enemies.removeBullet(index)
     table.remove(enemyBullets, index)
 end
 
-function enemies.updatestationBattle(dt)
+function enemies.updateStationBattle(dt)
     -- Different enemy spawning logic for station battle
     local baseSpawnRate = config.STATION_ENEMY_SPAWN_RATE
     
@@ -270,4 +270,5 @@ function enemies.removeEnemy(index)
     -- Notify station system of enemy defeat
     require("lib/station").enemyDefeated()
 end
+
 return enemies
