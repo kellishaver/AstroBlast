@@ -1,7 +1,7 @@
 -- ================================================================
--- lib/boss.lua
--- Boss battle and space station management
-local boss = {}
+-- lib/station.lua
+-- station battle and space station management
+local station = {}
 local config = require("lib/config")
 local sound = require("lib/sound")
 
@@ -11,11 +11,11 @@ local totalEnemiesNeeded = 0
 local isActive = false
 local stationState = "approaching"
 
-function boss.load()
-    boss.reset()
+function station.load()
+    station.reset()
 end
 
-function boss.reset()
+function station.reset()
     spaceStation = {
         x = config.SCREEN_WIDTH + 300,
         y = config.SCREEN_HEIGHT / 2,
@@ -26,15 +26,15 @@ function boss.reset()
         rotationOffset = 0
     }
     enemiesDefeated = 0
-    totalEnemiesNeeded = config.BOSS_ENEMIES_TO_DEFEAT
+    totalEnemiesNeeded = config.STATION_ENEMIES_TO_DEFEAT
     isActive = false
     stationState = "approaching"
 end
 
-function boss.activate()
+function station.activate()
     isActive = true
     enemiesDefeated = 0
-    totalEnemiesNeeded = config.BOSS_ENEMIES_TO_DEFEAT
+    totalEnemiesNeeded = config.STATION_ENEMIES_TO_DEFEAT
     spaceStation.dockingBayLit = false
     stationState = "approaching"
 
@@ -42,7 +42,7 @@ function boss.activate()
     spaceStation.x = config.SCREEN_WIDTH + 300
 end
 
-function boss.update(dt)
+function station.update(dt)
     if not isActive then return nil end
     
     -- Update station rotation animation
@@ -75,7 +75,7 @@ function boss.update(dt)
     return nil
 end
 
-function boss.startDocking()
+function station.startDocking()
     if stationState == "docking_ready" then
         stationState = "docking"
         return true
@@ -83,11 +83,11 @@ function boss.startDocking()
     return false
 end
 
-function boss.isDocking()
+function station.isDocking()
     return stationState == "docking"
 end
 
-function boss.getDockingTarget()
+function station.getDockingTarget()
     -- Return the position of the middle docking bay for the player to move to
     return {
         x = spaceStation.x - 10,
@@ -95,13 +95,13 @@ function boss.getDockingTarget()
     }
 end
 
-function boss.enemyDefeated()
+function station.enemyDefeated()
     if isActive then
         enemiesDefeated = enemiesDefeated + 1
     end
 end
 
-function boss.draw()
+function station.draw()
     if not isActive then return end
     
     local station = spaceStation
@@ -270,7 +270,7 @@ function boss.draw()
     end
 end
 
-function boss.checkPlayerDocking(playerData)
+function station.checkPlayerDocking(playerData)
     if not isActive or stationState ~= "docking_ready" then
         return false
     end
@@ -294,17 +294,17 @@ function boss.checkPlayerDocking(playerData)
     return false
 end
 
-function boss.getProgress()
+function station.getProgress()
     if not isActive then return 0, 0 end
     return enemiesDefeated, totalEnemiesNeeded
 end
 
-function boss.isActive()
+function station.isActive()
     return isActive
 end
 
-function boss.getState()
+function station.getState()
     return stationState
 end
 
-return boss
+return station

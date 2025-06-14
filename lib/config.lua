@@ -45,9 +45,10 @@ config.STAR_COUNT = 200
 config.STAR_SPEED_MIN = 50
 config.STAR_SPEED_MAX = 200
 config.SCROLL_SPEED = 220
--- Boss battle settings
-config.BOSS_TRIGGER_DISTANCE = 10000
-config.BOSS_ENEMIES_TO_DEFEAT = 10
-config.BOSS_ENEMY_SPAWN_RATE = 1.0
+
+-- Battle for station settings
+config.STATION_TRIGGER_DISTANCE = 2000
+config.STATION_ENEMIES_TO_DEFEAT = 3
+config.STATION_ENEMY_SPAWN_RATE = 1.0
 
 return config

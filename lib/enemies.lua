@@ -180,21 +180,22 @@ function enemies.removeEnemy(index)
     sound.play("enemyDestroyed")
 end
 
-function enemies.removeAllBullets()
+function enemies.removeBullet(index)
     local bullet = enemyBullets[index]
     if bullet.owner then
         bullet.owner.bulletCount = bullet.owner.bulletCount - 1
     end
     table.remove(enemyBullets, index)
 end
-function enemies.updateBossBattle(dt)
-    -- Different enemy spawning logic for boss battle
-    local baseSpawnRate = config.BOSS_ENEMY_SPAWN_RATE
+
+function enemies.updatestationBattle(dt)
+    -- Different enemy spawning logic for station battle
+    local baseSpawnRate = config.STATION_ENEMY_SPAWN_RATE
     
     spawnTimer = spawnTimer + dt
     if spawnTimer >= baseSpawnRate then
         -- Only spawn if we haven't defeated enough enemies yet
-        local defeated, needed = require("lib/boss").getProgress()
+        local defeated, needed = require("lib/station").getProgress()
         if defeated < needed then
             enemies.spawn()
             spawnTimer = 0
@@ -228,7 +229,7 @@ function enemies.updateBossBattle(dt)
             local dy = player.y - enemy.y
             enemy.targetRotation = math.atan2(dy, dx)
             
-            enemies.fireAtPlayer(enemy, player, 0) -- No score-based difficulty in boss battle
+            enemies.fireAtPlayer(enemy, player, 0) -- No score-based difficulty in station battle
             enemy.returnTimer = 0.5
         end
         
@@ -262,11 +263,11 @@ function enemies.updateBossBattle(dt)
     end
 end
 
--- Override the removeEnemy function to notify boss of defeat
+-- Override the removeEnemy function to notify station of defeat
 local originalRemoveEnemy = enemies.removeEnemy
 function enemies.removeEnemy(index)
     originalRemoveEnemy(index)
-    -- Notify boss system of enemy defeat
-    require("lib/boss").enemyDefeated()
+    -- Notify station system of enemy defeat
+    require("lib/station").enemyDefeated()
 end
 return enemies

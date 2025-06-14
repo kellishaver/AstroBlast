@@ -52,7 +52,7 @@ function ui.drawGameOver(score, highScore, font)
                        0, config.SCREEN_HEIGHT/2 - 40, config.SCREEN_WIDTH, "center")
 end
 
-function ui.drawBossHUD(score, lives, defeated, needed)
+function ui.drawStationHUD(score, lives, defeated, needed)
     -- Draw normal HUD
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(score, font, 10, 10)
@@ -60,7 +60,7 @@ function ui.drawBossHUD(score, lives, defeated, needed)
     -- Draw life icons
     ui.drawLifeIcons(lives)
     
-    -- Draw boss progress
+    -- Draw station progress
     if defeated < needed then
         love.graphics.setColor(1, 1, 0.2)
         love.graphics.print("Hostiles Remaining: " .. (needed - defeated), 10, config.SCREEN_HEIGHT - 40)

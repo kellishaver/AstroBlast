@@ -2,7 +2,7 @@
 -- Main game loop and coordination
 local player = require("lib/player")
 local enemies = require("lib/enemies")
-local boss = require("lib/boss")
+local station = require("lib/station")
 local asteroids = require("lib/asteroids")
 local powerups = require("lib/powerups")
 local effects = require("lib/effects")
@@ -36,7 +36,7 @@ function love.load()
     -- Initialize all modules
     player.load()
     enemies.load()
-    boss.load()
+    station.load()
     asteroids.load()
     powerups.load()
     effects.load()
@@ -58,10 +58,10 @@ function love.update(dt)
         -- Track distance traveled
         distanceTraveled = distanceTraveled + config.SCROLL_SPEED * dt
         
-        -- Check for boss trigger
-        if distanceTraveled >= config.BOSS_TRIGGER_DISTANCE then
-            gameState = "boss_approach"
-            boss.activate()
+        -- Check for station trigger
+        if distanceTraveled >= config.STATION_TRIGGER_DISTANCE then
+            gameState = "station_approach"
+            station.activate()
             -- Keep normal music playing during approach
         end
         
@@ -92,18 +92,18 @@ function love.update(dt)
         
         score = score + collision.getScoreThisFrame()
         
-    elseif gameState == "boss_approach" then
+    elseif gameState == "station_approach" then
         -- Station is approaching - keep normal gameplay but with station visible
         player.update(dt)
         enemies.update(dt, score)
         asteroids.update(dt, score) -- Keep asteroids during approach
         powerups.update(dt)
         
-        local bossResult = boss.update(dt)
-        if bossResult == "station_arrived" then
-            gameState = "boss_battle"
+        local stationResult = station.update(dt)
+        if stationResult == "station_arrived" then
+            gameState = "station_battle"
             sound.stopGameMusic()
-            sound.playBossMusic() -- Start boss music when battle begins
+            sound.playStationMusic() -- Start station music when battle begins
         end
         
         -- Handle collisions normally during approach
@@ -135,21 +135,21 @@ function love.update(dt)
             powerupIncrement = powerupIncrement + 100
             nextPowerupScore = nextPowerupScore + powerupIncrement
         end
-    elseif gameState == "boss_battle" then
+    elseif gameState == "station_battle" then
         player.update(dt)
-        enemies.updateBossBattle(dt)
+        enemies.updatestationBattle(dt)
         
-        local bossResult = boss.update(dt)
-        if bossResult == "docking_ready" and not dockingStarted then
+        local stationResult = station.update(dt)
+        if stationResult == "docking_ready" and not dockingStarted then
             -- Start the docking sequence
             gameState = "auto_docking"
             dockingStarted = true
             dockingTimer = 0
-            boss.startDocking()
+            station.startDocking()
         end
         
-        -- Handle collisions (no asteroids in boss battle)
-        local playerHit = collision.checkBossBattle(player, enemies, powerups)
+        -- Handle collisions (no asteroids in station battle)
+        local playerHit = collision.checkstationBattle(player, enemies, powerups)
         if playerHit then
             if playerHit.type == "powerup" then
                 lives = lives + 1
@@ -164,7 +164,7 @@ function love.update(dt)
                 if score > highScore then
                     highScore = score
                 end
-                sound.stopBossMusic()
+                sound.stopStationMusic()
                 sound.play("gameOver")
             end
         end
@@ -176,7 +176,7 @@ function love.update(dt)
         dockingTimer = dockingTimer + dt
         
         local playerData = player.getData()
-        local dockTarget = boss.getDockingTarget()
+        local dockTarget = station.getDockingTarget()
         
         -- Move player towards docking bay
         local dx = dockTarget.x - playerData.x
@@ -196,21 +196,21 @@ function love.update(dt)
             if score > highScore then
                 highScore = score
             end
-            sound.stopBossMusic()
+            sound.stopStationMusic()
             sound.play("victory") -- Play victory sound
         end
         
-        -- Continue updating the boss and effects during docking
-        boss.update(dt)
+        -- Continue updating the station and effects during docking
+        station.update(dt)
     end
 end
 
 function love.draw()
-    -- Only draw stars in normal play, not boss battle
-    if gameState ~= "boss_battle" and gameState ~= "auto_docking" then
+    -- Only draw stars in normal play, not station battle
+    if gameState ~= "station_battle" and gameState ~= "auto_docking" then
         effects.drawStars()
     else
-        -- Different background for boss battle - darker space
+        -- Different background for station battle - darker space
         love.graphics.setColor(0.02, 0.02, 0.08)
         love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
     end
@@ -220,24 +220,24 @@ function love.draw()
         local loadingScreen = love.graphics.newImage("assets/main-screen.png")
         love.graphics.draw(loadingScreen, 0, 0)
         
-    elseif gameState == "playing" or gameState == "boss_approach" then
+    elseif gameState == "playing" or gameState == "station_approach" then
         asteroids.draw()
         enemies.draw()
         powerups.draw()
         player.draw()
         ui.drawHUD(score, lives)
         
-    elseif gameState == "boss_battle" then
-        boss.draw()
+    elseif gameState == "station_battle" then
+        station.draw()
         enemies.draw()
         powerups.draw()
         player.draw()
-        ui.drawBossHUD(score, lives, boss.getProgress())
+        ui.drawStationHUD(score, lives, station.getProgress())
         
     elseif gameState == "auto_docking" then
-        boss.draw()
+        station.draw()
         player.draw()
-        ui.drawBossHUD(score, lives, boss.getProgress())
+        ui.drawStationHUD(score, lives, station.getProgress())
         
         -- Draw docking message
         love.graphics.setColor(0.2, 1, 0.3)
@@ -245,7 +245,7 @@ function love.draw()
                            0, config.SCREEN_HEIGHT/2 + 100, config.SCREEN_WIDTH, "center")
         
     elseif gameState == "victory" then
-        boss.draw()
+        station.draw()
         player.draw()
         ui.drawVictory(score, highScore)
      elseif gameState == "gameover" then
@@ -257,9 +257,9 @@ function love.keypressed(key)
     if key == "return" and gameState == "start" then
         gameState = "playing"
         sound.stopMenuMusic()
-        sound.stopBossMusic()
+        sound.stopStationMusic()
         sound.playGameMusic()
-    elseif key == "space" and (gameState == "playing" or gameState == "boss_approach" or gameState == "boss_battle") then
+    elseif key == "space" and (gameState == "playing" or gameState == "station_approach" or gameState == "station_battle") then
         player.fireMissile()
     elseif key == "r" and (gameState == "gameover" or gameState == "victory") then
         -- Restart logic
@@ -275,7 +275,7 @@ function love.keypressed(key)
         enemies.reset()
         asteroids.reset()
         powerups.reset()
-        boss.reset()  -- Reset boss
+        station.reset()  -- Reset station
         sound.stopMenuMusic()
         sound.playGameMusic()
     elseif key == "escape" then

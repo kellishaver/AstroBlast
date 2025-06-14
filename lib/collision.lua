@@ -134,7 +134,7 @@ function collision.getScoreThisFrame()
 end
 
 
-function collision.checkBossBattle(player, enemies, powerups)
+function collision.checkstationBattle(player, enemies, powerups)
     scoreThisFrame = 0
     local playerData = player.getData()
     local playerHit = nil
@@ -155,7 +155,7 @@ function collision.checkBossBattle(player, enemies, powerups)
         playerHit = powerupHit
     end
     
-    -- Check missiles vs enemies (no asteroids in boss battle)
+    -- Check missiles vs enemies (no asteroids in station battle)
     collision.checkMissileEnemies(playerData, enemies)
     
     return playerHit
