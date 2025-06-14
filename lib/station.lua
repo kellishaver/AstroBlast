@@ -78,10 +78,6 @@ function station.startDocking()
     return false
 end
 
-function station.isDocking()
-    return stationState == "docking"
-end
-
 function station.getDockingTarget()
     return {
         x = spaceStation.x - 10,
@@ -128,12 +124,5 @@ function station.getProgress()
     return enemiesDefeated, totalEnemiesNeeded
 end
 
-function station.isActive()
-    return isActive
-end
-
-function station.getState()
-    return stationState
-end
 
 return station
