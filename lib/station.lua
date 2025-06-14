@@ -47,6 +47,9 @@ function station.update(dt)
     spaceStation.rotationOffset = spaceStation.rotationOffset + dt * 0.5
     
     if stationState == "approaching" then
+        print("Station pos:", spaceStation.x, "Target:", spaceStation.targetX, "State:", stationState)
+        
+        -- Use original scroll speed for now to test
         spaceStation.x = spaceStation.x - config.SCROLL_SPEED * dt
         
         if spaceStation.x <= spaceStation.targetX then

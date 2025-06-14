@@ -122,16 +122,24 @@ function love.draw()
         love.graphics.setColor(0.02, 0.02, 0.08)
         love.graphics.rectangle("fill", 0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
     end
-    
+
     if gameState.state == "start" then
         love.graphics.setColor(1, 1, 1)
         local loadingScreen = love.graphics.newImage("assets/main-screen.png")
         love.graphics.draw(loadingScreen, 0, 0)
         
-    elseif gameState.state == "playing" or gameState.state == "station_approach" then
+    elseif gameState.state == "playing" then
         asteroids.draw()
         enemies.draw()
         powerups.draw()
+        player.draw()
+        ui.drawHUD(gameState.score, gameState.lives)
+        
+    elseif gameState.state == "station_approach" then
+        asteroids.draw()
+        enemies.draw()
+        powerups.draw()
+        station.draw()  -- ADD THIS LINE!
         player.draw()
         ui.drawHUD(gameState.score, gameState.lives)
         

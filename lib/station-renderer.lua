@@ -8,7 +8,7 @@ function renderer.drawMainHull(stationData)
     love.graphics.setColor(0.6, 0.65, 0.7)
     love.graphics.rectangle("fill", stationData.x, stationData.y - 20, 
                           stationData.width, 80)
-    
+
     -- Station core (central cylinder in main hull)
     love.graphics.setColor(0.7, 0.75, 0.8)
     love.graphics.rectangle("fill", stationData.x + 30, stationData.y - 15, 100, 60)
